@@ -17,7 +17,7 @@ const razorpay = new Razorpay({
 
 // 2. Configure File Upload Storage (Multer)
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
+    destination: (req, file, cb) => cb(null, '/tmp/'),
     filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
 const upload = multer({ storage });
@@ -165,4 +165,9 @@ app.get('/api/download/:noteId', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+}
+module.exports = app;
+
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
