@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SemNotes — Winter Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+    <!-- Winter Snowfall Canvas -->
+    <canvas id="snowCanvas"></canvas>
+
+    <!-- Animated Background Blobs -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <!-- Left-Side Slide-Out Drawer Menu -->
+    <div id="sidebarOverlay" class="sidebar-overlay hidden"></div>
+    <aside id="leftSidebar" class="left-sidebar">
+        <div class="sidebar-header">
+            <span class="logo">❄️ Sem<span class="highlight">Notes</span></span>
+            <button id="closeSidebarBtn" class="close-sidebar">&times;</button>
+        </div>
+
+        <div class="sidebar-section">
+            <p class="sidebar-label">APPEARANCE</p>
+            <button id="themeToggleBtn" class="sidebar-item">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">Switch to Dark Mode</span>
+            </button>
+        </div>
+
+        <div class="sidebar-section">
+            <p class="sidebar-label">ADMIN CONTROLS</p>
+            <div id="adminLoggedOutBox">
+                <button id="openAuthModalBtn" class="sidebar-item">
+                    <span>🔐</span>
+                    <span id="authMenuLabel">Admin Login / Setup</span>
+                </button>
+            </div>
+
+            <div id="adminLoggedInBox" class="hidden">
+                <div class="admin-badge">👤 Logged in as <strong id="loggedAdminName">Admin</strong></div>
+                <button id="openUploadBtn" class="sidebar-item primary-item">
+                    <span>📤</span>
+                    <span>Upload New Notes</span>
+                </button>
+                <button id="logoutAdminBtn" class="sidebar-item danger-item">
+                    <span>🚪</span>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Top Navbar with Left Three-Dot Button -->
+    <header class="navbar">
+        <div class="nav-left">
+            <button id="threeDotBtn" class="three-dot-btn" title="Open Menu" aria-label="Open Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">
+                <span class="logo-icon">📚</span>
+                <span>Sem<span class="highlight">Notes</span></span>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <button id="quickThemeBtn" class="icon-pill-btn" title="Toggle Light/Dark Mode">🌙</button>
+            <button id="headerActionBtn" class="admin-btn">🔐 Admin</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" data-aos="fade-down" data-aos-duration="800">
+            <div class="hero-badge">❄️ Winter Exam Prep Edition</div>
+            <h1>Ace Your Semester Exams <br><span class="gradient-text">Without the Stress</span></h1>
+            <p>High-quality, handwritten & topper-curated university notes. Instant PDF download immediately after secure payment.</p>
+
+            <div class="filter-bar" data-aos="fade-up" data-aos-delay="150">
+                <input type="text" id="searchInput" placeholder="🔍 Search by subject or topic...">
+                <select id="semesterFilter">
+                    <option value="all">All Semesters</option>
+                    <option value="Sem 1">Semester 1</option>
+                    <option value="Sem 2">Semester 2</option>
+                    <option value="Sem 3">Semester 3</option>
+                    <option value="Sem 4">Semester 4</option>
+                    <option value="Sem 5">Semester 5</option>
+                    <option value="Sem 6">Semester 6</option>
+                    <option value="Sem 7">Semester 7</option>
+                    <option value="Sem 8">Semester 8</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Notes Grid -->
+        <section id="notesGrid" class="notes-grid"></section>
+    </main>
+
+    <!-- MODAL 1: Admin First-Time Account Setup / Login -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-content animate-pop">
+            <span id="closeAuthModalBtn" class="close">&times;</span>
+            <h2 id="authModalTitle">🔐 Admin Login</h2>
+            <p id="authModalSub" class="modal-sub">Enter your admin credentials to manage notes.</p>
+            
+            <form id="authForm">
+                <input type="text" id="adminUsername" placeholder="Admin Username" required>
+                <input type="password" id="adminPassInput" placeholder="Password (min 4 characters)" required>
+                <button type="submit" id="authSubmitBtn" class="submit-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Admin Upload Notes -->
+    <div id="uploadModal" class="modal hidden">
+        <div class="modal-content animate-pop">
+            <span id="closeUploadModalBtn" class="close">&times;</span>
+            <h2>📤 Publish New Note</h2>
+            <p class="modal-sub">Upload your PDF and set your price.</p>
+            <form id="uploadForm">
+                <input type="text" id="title" placeholder="Note Title (e.g., Data Structures Unit 1-5)" required>
+                <div class="form-row">
+                    <select id="semester" required>
+                        <option value="">Semester</option>
+                        <option value="Sem 1">Semester 1</option>
+                        <option value="Sem 2">Semester 2</option>
+                        <option value="Sem 3">Semester 3</option>
+                        <option value="Sem 4">Semester 4</option>
+                        <option value="Sem 5">Semester 5</option>
+                        <option value="Sem 6">Semester 6</option>
+                        <option value="Sem 7">Semester 7</option>
+                        <option value="Sem 8">Semester 8</option>
+                    </select>
+                    <input type="number" id="price" placeholder="Price (₹)" min="1" required>
+                </div>
+                <input type="text" id="subject" placeholder="Subject Name (e.g., Computer Science)" required>
+                <label class="file-drop-area">
+                    <span>📄 Choose PDF File</span>
+                    <input type="file" id="pdfFile" accept="application/pdf" required>
+                </label>
+                <button type="submit" class="submit-btn">Upload & Go Live 🚀</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 SemNotes Store • Instant PDF Delivery • Secured by Razorpay</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
